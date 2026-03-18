@@ -10,18 +10,40 @@ jobs:
     name: Build Backend
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
+      - name: Checkout backend repo
+        uses: actions/checkout@v4
+        with:
+          repository: Sammy-samzy/golang-gin-realworld-example-app
+          path: golang-gin-realworld-example-app
+
+      - name: Copy Dockerfile
+        uses: actions/checkout@v4
+        with:
+          path: devops
 
       - name: Build backend Docker image
-        run: docker build -t backend ./golang-gin-realworld-example-app
+        run: |
+          cp devops/golang-gin-realworld-example-app/Dockerfile golang-gin-realworld-example-app/Dockerfile
+          docker build -t backend ./golang-gin-realworld-example-app
 
   build-frontend:
     name: Build Frontend
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
+      - name: Checkout frontend repo
+        uses: actions/checkout@v4
+        with:
+          repository: Sammy-samzy/angular-realworld-example-app
+          path: angular-realworld-example-app
+
+      - name: Copy Dockerfile
+        uses: actions/checkout@v4
+        with:
+          path: devops
 
       - name: Build frontend Docker image
-        run: docker build -t frontend ./angular-realworld-example-app
+        run: |
+          cp devops/angular-realworld-example-app/Dockerfile angular-realworld-example-app/Dockerfile
+          cd angular-realworld-example-app
+          npm install --legacy-peer-deps
+          docker build -t frontend .
