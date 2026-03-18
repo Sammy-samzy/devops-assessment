@@ -6,12 +6,17 @@ services:
     environment:
       - PORT=8080
       - GIN_MODE=release
-      - DB_PATH=./data/gorm.db
+      - DB_PATH=/app/data/gorm.db
     volumes:
       - sqlite_data:/app/data
     networks:
       - app-network
     restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:8080/api/ping/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
 
   frontend:
     build:
@@ -21,7 +26,8 @@ services:
       - app-network
     restart: unless-stopped
     depends_on:
-      - backend
+      backend:
+        condition: service_healthy
 
   nginx:
     image: nginx:alpine
@@ -39,6 +45,8 @@ services:
 
 volumes:
   sqlite_data:
+    driver: local
+    name: conduit_sqlite_data
 
 networks:
   app-network:
