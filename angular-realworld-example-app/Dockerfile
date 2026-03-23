@@ -22,7 +22,8 @@ FROM node:18-alpine AS builder
 WORKDIR /app
 
 COPY package*.json ./
-COPY node_modules ./node_modules
+RUN npm install --legacy-peer-deps
+
 COPY . .
 
 RUN ./node_modules/.bin/ng build --configuration production --base-href /
