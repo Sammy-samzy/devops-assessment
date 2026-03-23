@@ -22,6 +22,8 @@ services:
     build:
       context: ./angular-realworld-example-app
     container_name: frontend
+    volumes:
+      - angular_dist:/usr/share/nginx/html
     networks:
       - app-network
     restart: unless-stopped
@@ -36,6 +38,7 @@ services:
       - "80:80"
     volumes:
       - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
+      - angular_dist:/usr/share/nginx/html
     networks:
       - app-network
     restart: unless-stopped
@@ -47,6 +50,8 @@ volumes:
   sqlite_data:
     driver: local
     name: conduit_sqlite_data
+  angular_dist:
+    driver: local
 
 networks:
   app-network:
